@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>テンプレート・プロフィール</title>
+<meta name="description" content="選んで作る自己紹介ゲーム。よくあるプロフィールの型に、変な言葉をあてはめて遊ぼう。">
+<meta name="theme-color" content="#F3F1FA">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="paochanz">
+<meta property="og:title" content="テンプレート・プロフィール">
+<meta property="og:description" content="おばあちゃんに勧められて始めるな。">
+<meta property="og:url" content="https://paochanz.github.io/template-profile/">
+<meta property="og:image" content="https://paochanz.github.io/template-profile/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="テンプレート・プロフィールのロゴと、プロフィールカードの例">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="テンプレート・プロフィール">
+<meta name="twitter:description" content="おばあちゃんに勧められて始めるな。">
+<meta name="twitter:image" content="https://paochanz.github.io/template-profile/ogp.png">
+<meta name="twitter:image:alt" content="テンプレート・プロフィールのロゴと、プロフィールカードの例">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}</style>
+<style>
+:root{
+  --bg:#F3F1FA; --surface:#FFFFFF; --ink:#221F3C; --muted:#6C6888;
+  --accent:#C8325A; --accent-ink:#FFFFFF; --line:#DAD6EC; --tint:#FFE4EB; --good:#2F8F6B;
+  --font:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#14132A; --surface:#201E3B; --ink:#F2F0FF; --muted:#A9A5C9; --accent:#FF6F92; --accent-ink:#2A0E18; --line:#37345C; --tint:#40233A; --good:#5CC9A0; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:500;line-height:1.6;font-size:15px;line-break:strict;overflow-wrap:anywhere;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));-webkit-tap-highlight-color:transparent}
+#app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+.screen{display:flex;flex-direction:column;gap:16px;padding-block:20px 8px;flex:1}
+.stepper{display:flex;gap:4px}
+.stepper i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.stepper i.on{background:var(--accent)}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.3}
+h1{font-size:34px;font-weight:900;letter-spacing:.02em}
+h2{font-size:22px;font-weight:900}
+h3{font-size:15px;font-weight:700;color:var(--muted);letter-spacing:.06em}
+p{margin:0}
+.muted{color:var(--muted);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer;line-height:1.3;text-align:left}
+.chip[aria-pressed="true"]{background:var(--tint);border-color:var(--accent);font-weight:700}
+.chip:focus-visible,.btn:focus-visible,select:focus-visible,input:focus-visible,.pcard:focus-visible,.sw:focus-visible,.fill:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.chip.block{border-radius:14px;width:100%}
+.btn{font:inherit;font-weight:900;font-size:16px;border:0;border-radius:14px;padding:14px 18px;background:var(--accent);color:var(--accent-ink);cursor:pointer;flex:1}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);flex:0 0 auto}
+.bar{position:sticky;bottom:0;display:flex;gap:10px;padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 70%,transparent);margin-top:auto}
+input[type=text],select{font:inherit;width:100%;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+label.f{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:13px;color:var(--muted)}
+.photo{border-radius:16px;overflow:hidden;line-height:0;background:var(--line)}
+.photo svg{width:100%;height:auto;display:block}
+.photo.sq{border-radius:12px}
+.preview{width:58%;margin:0 auto}
+.sentence{font-size:16px;line-height:1.9}
+.sentence .cur{background:var(--tint);border-radius:6px;padding:0 2px}
+.sentence .fill{font:inherit;color:inherit;background:none;border:0;border-bottom:2px dotted var(--accent);padding:0 1px;cursor:pointer;border-radius:0}
+.sentence .fill.cur{background:var(--tint);border-bottom-style:solid}
+.support{text-align:center;font-size:13px;color:var(--muted);margin:0}
+.support+.support{margin-top:-6px}
+.support a{color:var(--accent);font-weight:700}
+.sentence .ph{color:var(--muted)}
+.sentence p+p{margin-top:2px}
+.profile{display:flex;flex-direction:column;gap:14px}
+.profile .head{display:flex;gap:14px;align-items:flex-start}
+.profile .head .photo{width:42%;flex:none}
+.profile .meta{display:flex;flex-direction:column;gap:4px;min-width:0}
+.profile .name{font-size:22px;font-weight:900;line-height:1.25;overflow-wrap:anywhere}
+.profile .age{font-size:13px;font-weight:700}
+.profile .age small{color:var(--muted);font-weight:500}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.tag{font-size:12px;font-weight:700;border-radius:8px;padding:2px 8px;background:var(--tint)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:8px 8px 12px;display:flex;flex-direction:column;gap:8px;cursor:pointer;position:relative;text-align:left;font:inherit;color:inherit}
+.pcard .nm{font-weight:900;font-size:16px;padding:0 4px;overflow-wrap:anywhere}
+.pcard .ag{font-size:11px;color:var(--muted);padding:0 4px;line-height:1.4}
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(10,8,30,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet>div{background:var(--bg);width:100%;max-width:480px;max-height:92%;overflow:auto;border-radius:22px 22px 0 0;padding:16px max(16px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.center{text-align:center;align-items:center}
+.result-img{width:100%;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.err{color:var(--accent);font-weight:700;font-size:13px;min-height:1.4em}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:700;z-index:30}
+.logo{display:flex;flex-direction:column;align-items:center;gap:14px}
+.logo svg{width:96px;height:auto}
+.wordmark{font-size:clamp(20px,6.6vw,38px);font-weight:900;letter-spacing:0;line-height:1.25;text-align:center;white-space:nowrap}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:34px;height:34px;border-radius:50%;border:2.5px solid var(--line);padding:0;cursor:pointer}
+.sw[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--surface) inset}
+.sw.light{box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.sw[aria-pressed="true"].light{box-shadow:inset 0 0 0 2px var(--surface)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opts .chip{font-size:16px;padding:14px 16px}
+.hint{font-size:12px;color:var(--muted);text-align:center}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.pvwrap{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:8px 0;display:flex;justify-content:center}
+.pvwrap .photo{width:52%}
+.logo+.f{margin-top:0}
+.ptags{display:flex;flex-wrap:wrap;gap:6px}
+.ptags span{font-size:18px;font-weight:900;background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:2px 12px;line-height:1.5}
+.pcard .mini{display:flex;flex-wrap:wrap;gap:4px;padding:0 4px}
+@media (min-width:600px){.sheet{align-items:center}.sheet>div{border-radius:22px;max-height:88%}}
+.ag1{display:block;font-size:12px;font-weight:700;color:var(--muted);line-height:1.3}
+.ag2{display:block;font-size:20px;font-weight:900;line-height:1.3}
+.pcard .ag .ag1{font-size:11px}.pcard .ag .ag2{font-size:16px;color:var(--ink)}
+.agebox{text-align:center;padding:8px 0}.agebox .ag1{font-size:14px}.agebox .ag2{font-size:36px}
+select{appearance:none;-webkit-appearance:none;border:2px solid var(--accent);font-weight:900;font-size:18px;padding-right:44px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M4 8l8 9 8-9z' fill='%23E4466D'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:24px}
+.ptags.inl{margin-top:4px}.ptags.inl span{font-size:15px;padding:0 10px}
+.btn[disabled]{background:var(--line);color:var(--muted);opacity:1}
+.profile .head .photo.sq-me{width:44%}
+.pcard .mini span{background:var(--tint);color:var(--accent)}
+.chip.pc{border-color:transparent;font-size:17px;font-weight:900;padding:10px 16px}
+.chip.pc[aria-pressed="true"]{border-color:transparent;box-shadow:0 0 0 2px var(--bg),0 0 0 5px var(--ink)}
+.chip.pc.dim{opacity:.55}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript>このゲームにはJavaScriptが必要です。</noscript>
+<script>window.GAME_DATA={"SLOTS":[{"id":"greet","line":"1.挨拶","label":"〔挨拶〕","opts":[{"t":"はじめまして！"},{"t":"こんにちは！"},{"t":"ごきげんよう！"},{"t":"ご覧いただきありがとうございます！"},{"t":"本題に入りましょう。"},{"t":"ここで会ったのも何かの縁。"},{"t":"初めて会った気がしませんね。"},{"t":"それはそうと。"},{"t":"調子はいかがですか？"},{"t":"やれやれ。"},{"t":"……。"},{"t":"Yo！"},{"t":"もはやこれまで。"},{"t":"アラーッ！"},{"t":"お疲れさまです！"},{"t":"ふむ。"},{"t":"お待たせしました！"},{"t":"おやおや、こんなところでお会いするとは。"},{"t":"挨拶は抜きにしましょう。"},{"t":"はいどうも～！"},{"t":"ほう。"},{"t":"単刀直入に言います。"},{"t":"失礼します。"},{"t":"まあ座ってください。"},{"t":"聞いてください。"},{"t":"結論から申し上げます。"},{"t":"にゃーん！"},{"t":"ごめんください。"},{"t":"ようこそ。"},{"t":"ついにこの時が来た。"},{"t":"ふーん。"},{"t":"えっと。"},{"t":"ちょっといいですか。"},{"t":"見えていますでしょうか？"},{"t":"まさか。"},{"t":"なるほど。"},{"t":"あのね。"},{"t":"嘘は言いません。"},{"t":"ここだけの話。"},{"t":"万歳！"}]},{"id":"who1","line":"2.きっかけ","label":"〔誰に〕","opts":[{"t":"友だちに"},{"t":"同僚に"},{"t":"母に"},{"t":"おばあちゃんに"},{"t":"先輩に"},{"t":"恐竜に"},{"t":"占い師に"},{"t":"近所の猫に"},{"t":"通りすがりの人に"},{"t":"鏡の中の自分に"},{"t":"店長に"},{"t":"配膳ロボットに"},{"t":"タクシーの運転手さんに"},{"t":"同窓会で再会した人に"},{"t":"サウナで一緒になった人に"},{"t":"フリマサイトで値切ってきた人に"},{"t":"ネットの掲示板の人に"},{"t":"多浪界隈の方に"},{"t":"ファンの方に"}]},{"id":"passive","line":"2.きっかけ","label":"〔された系〕","opts":[{"t":"勧められて"},{"t":"脅されて"},{"t":"甘やかされて"},{"t":"説得されて"},{"t":"煽られて"},{"t":"頼まれて"},{"t":"誘われて"},{"t":"見守られて"},{"t":"放っておかれて"},{"t":"呆れられて"},{"t":"そそのかされて"},{"t":"励まされて"},{"t":"おだてられて"},{"t":"睨まれて"},{"t":"背中を押されて"},{"t":"なだめられて"},{"t":"叱られて"},{"t":"拝まれて"},{"t":"笑われて"},{"t":"急かされて"},{"t":"騙されて"},{"t":"懇願されて"},{"t":"取り囲まれて"},{"t":"問い詰められて"},{"t":"泣きつかれて"},{"t":"誘惑されて"},{"t":"慰められて"},{"t":"呼び出されて"},{"t":"命令されて"},{"t":"待ち伏せされて"},{"t":"断られて"},{"t":"期待されて"},{"t":"許されて"},{"t":"抜擢されて"},{"t":"任命されて"},{"t":"押し切られて"},{"t":"丸め込まれて"},{"t":"見せられて"}]},{"id":"did","line":"2.きっかけ","label":"〔何した〕","opts":[{"t":"始めました。"}]},{"id":"industry","line":"3.職業","label":"〔業界〕で","opts":[{"t":"IT業界で"},{"t":"医療の現場で"},{"t":"教育の世界で"},{"t":"不動産会社で"},{"t":"銀行で"},{"t":"旅行会社で"},{"t":"出版社で"},{"t":"市役所で"},{"t":"運送会社で"},{"t":"アパレル業界で"},{"t":"動物園で"},{"t":"プロ野球界で"},{"t":"百貨店で"},{"t":"消防署で"},{"t":"図書館で"},{"t":"郵便局で"},{"t":"温泉旅館で"},{"t":"ホテルで"},{"t":"ゲーム会社で"},{"t":"書店で"},{"t":"保育園で"},{"t":"広告代理店で"},{"t":"法律事務所で"},{"t":"税務署で"},{"t":"保険会社で"},{"t":"商社で"},{"t":"メーカーで"},{"t":"花屋で"}]},{"id":"role","line":"3.職業","label":"〔役割〕をしています。","opts":[{"t":"会議の司会"},{"t":"議事録の清書"},{"t":"挨拶"},{"t":"資料のホチキス留め"},{"t":"rm -rf /*"},{"t":"備品の在庫確認"},{"t":"ホワイトボードの管理"},{"t":"1日5回の間食"},{"t":"不正"},{"t":"転職活動"},{"t":"すべての仕事"},{"t":"コピー機の見守り"},{"t":"まばたきの我慢"},{"t":"寝たふり"},{"t":"努力"},{"t":"アンガーマネジメント"},{"t":"観葉植物の水やり"},{"t":"気配り"},{"t":"根回し"},{"t":"孤独な戦い"},{"t":"責任の追及"},{"t":"愛想笑い"},{"t":"見て見ぬふり"},{"t":"後始末"},{"t":"前向きな検討"},{"t":"自己嫌悪"},{"t":"班長"},{"t":"修行"}]},{"id":"with","line":"4.休日","label":"〔誰と〕","opts":[{"t":"友だちと"},{"t":"ひとりで"},{"t":"家族と"},{"t":"猫の{cat}と"},{"t":"実家の愛犬と"},{"t":"昔の同級生と"},{"t":"近所の人と"},{"t":"観葉植物と"},{"t":"鳩数羽と"},{"t":"旅仲間と"},{"t":"かつての師匠と"},{"t":"ドッペルゲンガーと"},{"t":"親戚一同と"}]},{"id":"where","line":"4.休日","label":"〔どこで〕","opts":[{"t":"近所の公園で"},{"t":"家で"},{"t":"カフェで"},{"t":"図書館で"},{"t":"山で"},{"t":"海辺で"},{"t":"商店街で"},{"t":"銭湯で"},{"t":"電車の中で"},{"t":"河川敷で"},{"t":"神社の境内で"},{"t":"屋上で"},{"t":"古本屋で"},{"t":"橋の上で"},{"t":"コインランドリーで"},{"t":"公民館で"},{"t":"ベランダで"},{"t":"遊園地で"},{"t":"路地裏で"},{"t":"カラオケで"}]},{"id":"what","line":"4.休日","label":"〔何を〕して過ごしています。","opts":[{"t":"読書を"},{"t":"昼寝を"},{"t":"お菓子作りを"},{"t":"散歩を"},{"t":"筋トレを"},{"t":"将棋を"},{"t":"写真撮影を"},{"t":"映画鑑賞を"},{"t":"日向ぼっこを"},{"t":"料理を"},{"t":"掃除を"},{"t":"ネットサーフィンを"},{"t":"ボードゲームを"},{"t":"釣りを"},{"t":"ラジオ体操を"},{"t":"ジグソーパズルを"},{"t":"手芸を"},{"t":"素振りを"},{"t":"ヒッチハイクを"},{"t":"折り紙を"},{"t":"草むしりを"},{"t":"茶道を"},{"t":"作曲を"},{"t":"フラダンスを"},{"t":"二度寝を"}]},{"id":"wish_who","line":"5.希望","label":"〔どんな〕人と","opts":[{"t":"顔が良いだけの"},{"t":"内心こちらを見下している"},{"t":"意味なく夜更かししてしまう"},{"t":"一文字も書いていない作家志望の"},{"t":"9時間睡眠の"},{"t":"魚介類と友だちになれる"},{"t":"許せない"},{"t":"マッチングアプリを使っていない"},{"t":"二度と会えないはずの"},{"t":"自己肯定感が高すぎて皇帝になった"},{"t":"裏表のある"},{"t":"常に道を聞かれる"},{"t":"雨乞いの才能がある"},{"t":"自分のMBTIを知らない"},{"t":"スマホの充電が常に1%の"},{"t":"犬に吠えられる"},{"t":"ロシアをソ連と呼ぶ"},{"t":"あなたのような"},{"t":"戦隊モノで言うと緑の"},{"t":"水しか飲まない"}]},{"id":"wish_what","line":"5.希望","label":"〔何を〕（〜たら）","opts":[{"t":"ご飯を食べに行けたら"},{"t":"無言でお茶が飲めたら"},{"t":"ゆっくり散歩できたら"},{"t":"同じ映画を観て語り合えたら"},{"t":"見知らぬ土地を旅できたら"},{"t":"計画を立てて出かけられたら"},{"t":"何かを作れたら"},{"t":"毎日「おはよう」と言えたら"},{"t":"朝まで語り合えたら"},{"t":"家でのんびり過ごせたら"},{"t":"同じ空を見上げられたら"},{"t":"笑えたら"},{"t":"知らない町内会に紛れ込めたら"},{"t":"つまらないパーティーを抜け出せたら"},{"t":"最終回で泣けたら"},{"t":"人生をやり直せたら"}]},{"id":"wish_feel","line":"5.希望","label":"〔感情〕","opts":[{"t":"嬉しいです。"},{"t":"楽しいです。"},{"t":"幸せです。"},{"t":"心強いです。"},{"t":"安心です。"},{"t":"ほっとします。"},{"t":"感激です。"},{"t":"胸が躍ります。"},{"t":"光栄です。"},{"t":"感無量です。"},{"t":"励みになります。"},{"t":"救われます。"},{"t":"悔いはないです。"},{"t":"しみじみします。"},{"t":"言うことなしです。"},{"t":"夢のようです。"},{"t":"報われます。"},{"t":"ありがたいです。"},{"t":"頬がゆるみます。"},{"t":"世界が広がります。"},{"t":"穏やかな気持ちになります。"},{"t":"動悸がします。"},{"t":"腑に落ちます。"},{"t":"気が楽になります。"},{"t":"目頭が熱くなります。"},{"t":"血圧が下がります。"},{"t":"頭が下がります。"},{"t":"鳥肌が立ちます。"},{"t":"背筋が凍ります。"},{"t":"笑いが止まりません。"},{"t":"血が騒ぎます。"},{"t":"胸を打たれます。"},{"t":"迷いが晴れます。"},{"t":"食欲が湧きます。"},{"t":"気が済みます。"},{"t":"感謝の念に堪えません。"}]},{"id":"closing","line":"6.結び","label":"〔結びの一文〕","opts":[{"t":"お気軽にいいねしてください。"},{"t":"どこかで見守っていただければ幸いです。"},{"t":"お会いできる日を楽しみにしています。"},{"t":"負けません。"},{"t":"素敵な出会いがありますように。"},{"t":"どうぞよろしくお願いします。"},{"t":"お体に気をつけてお過ごしください。"},{"t":"お手柔らかにお願いします。"},{"t":"お互い頑張りましょう。"},{"t":"引き際に人間の美しさが出ます。"},{"t":"夜道に気を付けてください。"},{"t":"いざゆかん。"},{"t":"ご査収ください。"},{"t":"お構いなく。"},{"t":"ご期待ください。"},{"t":"ご武運を。"},{"t":"以上、ご報告でした。"},{"t":"悪しからず。"},{"t":"ご容赦ください。"},{"t":"お問い合わせはFAXにて受け付けております。"},{"t":"ご協力をお願いします。"},{"t":"さようなら。"},{"t":"以上、これをもって遺言とかえさせていただきます。"},{"t":"宣戦布告でした。"},{"t":"なーんちゃって！"},{"t":"えへへ。"},{"t":"誤解なさらぬよう。"},{"t":"覚悟はできていますか？"}]}],"TEMPLATE":["{greet}","{who1}{passive}{did}","{industry}{role}をしています。","休日は{with}{where}{what}して過ごしています。","{wish_who}人と{wish_what}{wish_feel}","{closing}"],"PERSONALITY":[{"t":"明るい","color":"#F2A93B"},{"t":"八方美人","color":"#E86AA6"},{"t":"陰険","color":"#5B3A8C"},{"t":"卑屈","color":"#6B7A99"},{"t":"短気","color":"#D9452F"},{"t":"残忍","color":"#8E1B2E"},{"t":"怠惰","color":"#8A9A5B"},{"t":"無気力","color":"#8E8E99"},{"t":"狡猾","color":"#2F8F5B"},{"t":"好奇心旺盛","color":"#1FA3C9"},{"t":"偏屈","color":"#8B5E3C"},{"t":"臆病","color":"#9B8FD6"},{"t":"優しい","color":"#5FB88A"},{"t":"お節介","color":"#E58A3C"},{"t":"他力本願","color":"#6FA3D8"},{"t":"冷静","color":"#3A6EA5"},{"t":"傲慢","color":"#C9961A"},{"t":"嫉妬深い","color":"#6BA83A"},{"t":"冷酷","color":"#2B4C6F"},{"t":"皮肉屋","color":"#2A8C8C"}],"SPECIES":[{"id":"asagao","name":"アサガオ","unit":"ヶ月","opts":[2,3,4,5,6]},{"id":"hamster","name":"ジャンガリアンハムスター","unit":"ヶ月","opts":[6,7,8,9,10,11,12,13,14,15,16,17,18,19]},{"id":"poodle","name":"トイプードル","unit":"歳","opts":[2,3,4,5,6,7,8,9,10,11,12]},{"id":"human","name":"人間","unit":"歳","opts":[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65]},{"id":"tortoise","name":"ガラパゴスゾウガメ","unit":"歳","opts":[35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120]}],"NAMES":["ももこ","ケンタ","はるまき","ミナト","さくら","タケシ","ぽん太","アカネ","ソラ","ひなた","トモヤ","みかん","レン","しずく","ダイスケ","ユウナ","こむぎ","ハヤト","あずき","マサル","ナナ","リク","カエデ","シンゴ","つばさ","ミオ","ゴロー","ひなこ","ヨシオ"],"VARS":{"cat":["にゃん小町","弁慶","ぽぽ太郎","キャラメリゼ","閣下"]},"DEFAULT_NAMES":["もちお","ふわお","もぐお","もふこ","ほわこ","まろこ","むぎお","ほろこ"]};</script>
+<script>(function (root) {
+  const SIL = "#46506A";
+  const HAIRS = [
+    { id: "short",    name: "ショート",     color: "#2B2B3A" },
+    { id: "long",     name: "ロング",       color: "#5B3A29" },
+    { id: "bob",      name: "ボブ",         color: "#C58B3C" },
+    { id: "ponytail", name: "ポニーテール", color: "#1E1E2C" },
+    { id: "bun",      name: "おだんご",     color: "#8B5E3C" },
+    { id: "curly",    name: "くるくる",     color: "#3A2A22" },
+    { id: "wave",     name: "ななめ分け",   color: "#9AA0A8" },
+    { id: "buzz",     name: "坊主",         color: "#2E2E2E" },
+  ];
+  const CLOTHES = [
+    { id: "tshirt",  name: "Tシャツ",       color: "#E76F51" },
+    { id: "shirt",   name: "襟付きシャツ",  color: "#6FA3D8" },
+    { id: "hoodie",  name: "パーカー",      color: "#2A9D8F" },
+    { id: "turtle",  name: "タートル",      color: "#E9C46A" },
+    { id: "suit",    name: "スーツ",        color: "#2B3A55" },
+    { id: "stripe",  name: "ボーダー",      color: "#D96C75" },
+  ];
+  const HAIR_COLORS = [
+    { id: "black", name: "黒", color: "#2B2B3A" }, { id: "brown", name: "茶", color: "#5B3A29" },
+    { id: "blonde", name: "金", color: "#D4A24A" }, { id: "gray", name: "灰", color: "#9AA0A8" },
+    { id: "red", name: "赤", color: "#B8412F" }, { id: "blue", name: "青", color: "#2F5D8A" },
+    { id: "pink", name: "桃", color: "#D96C9A" }, { id: "white", name: "白", color: "#E8E8EE" },
+  ];
+  const CLOTHES_COLORS = [
+    { id: "coral", name: "珊瑚", color: "#E76F51" }, { id: "sky", name: "空", color: "#6FA3D8" },
+    { id: "teal", name: "青緑", color: "#2A9D8F" }, { id: "yellow", name: "黄", color: "#E9C46A" },
+    { id: "navy", name: "紺", color: "#2B3A55" }, { id: "rose", name: "薔薇", color: "#D96C75" },
+    { id: "violet", name: "紫", color: "#8E7DBE" }, { id: "white", name: "白", color: "#F1F1F4" },
+    { id: "black", name: "黒", color: "#2A2A33" },
+  ];
+  const ITEMS = [
+    { id: "none", name: "なし" }, { id: "glasses", name: "メガネ" }, { id: "sunglasses", name: "サングラス" },
+    { id: "ribbon", name: "リボン" }, { id: "flower", name: "花飾り" }, { id: "cap", name: "キャップ" },
+    { id: "crown", name: "王冠" }, { id: "headphones", name: "ヘッドホン" }, { id: "mask", name: "マスク" },
+    { id: "bowtie", name: "蝶ネクタイ" },
+  ];
+  function itemSvg(id) {
+    switch (id) {
+      case "glasses": return '<g fill="none" stroke="#1E1E28" stroke-width="4"><circle cx="128" cy="170" r="16"/><circle cx="172" cy="170" r="16"/><path d="M144 170 H156 M112 167 L100 162 M188 167 L200 162"/></g>';
+      case "sunglasses": return '<g fill="#15151C"><rect x="107" y="158" width="39" height="25" rx="10"/><rect x="154" y="158" width="39" height="25" rx="10"/><rect x="144" y="164" width="12" height="4"/><path d="M107 163 L98 160 M193 163 L202 160" stroke="#15151C" stroke-width="4"/></g>';
+      case "ribbon": return '<g><path d="M122 104 L92 86 L92 122Z" fill="#E4466D"/><path d="M122 104 L152 86 L152 122Z" fill="#E4466D"/><circle cx="122" cy="104" r="8" fill="#B92E52"/></g>';
+      case "flower": return '<g>' + [0, 72, 144, 216, 288].map((a) => `<circle cx="${192 + 11 * Math.cos(a * Math.PI / 180)}" cy="${112 + 11 * Math.sin(a * Math.PI / 180)}" r="9" fill="#F7A8C4"/>`).join("") + '<circle cx="192" cy="112" r="6" fill="#F4C84A"/></g>';
+      case "cap": return '<g><path d="M99 142 C97 92 203 92 201 142 Z" fill="#3A6EA5"/><path d="M170 140 Q228 138 234 152 L168 152Z" fill="#2D5584"/><circle cx="150" cy="96" r="5" fill="#2D5584"/></g>';
+      case "crown": return '<path d="M110 102 L116 70 L134 90 L150 64 L166 90 L184 70 L190 102Z" fill="#F2C14E" stroke="#D49B1E" stroke-width="3" stroke-linejoin="round"/>';
+      case "headphones": return '<g><path d="M100 164 C96 84 204 84 200 164" fill="none" stroke="#2D2D38" stroke-width="9" stroke-linecap="round"/><rect x="88" y="150" width="22" height="44" rx="10" fill="#E4466D"/><rect x="190" y="150" width="22" height="44" rx="10" fill="#E4466D"/></g>';
+      case "mask": return '<g><path d="M108 180 Q150 170 192 180 L188 216 Q150 234 112 216Z" fill="#EAF1F7" stroke="#C3D0DD" stroke-width="2"/><path d="M108 182 L98 174 M192 182 L202 174" stroke="#C3D0DD" stroke-width="3" fill="none"/><path d="M122 196 H178 M122 206 H178" stroke="#C3D0DD" stroke-width="2"/></g>';
+      case "bowtie": return '<g><path d="M150 276 L120 260 L120 292Z M150 276 L180 260 L180 292Z" fill="#C9433B"/><circle cx="150" cy="276" r="7" fill="#9E2C27"/></g>';
+    }
+    return "";
+  }
+  const BGS = [
+    { id: "peach",  name: "ピーチ",   color: "#F6D5C8" },
+    { id: "mint",   name: "ミント",   color: "#CDE7D8" },
+    { id: "sky",    name: "スカイ",   color: "#CFE0F5" },
+    { id: "lemon",  name: "レモン",   color: "#F5E6B8" },
+    { id: "lilac",  name: "ライラック", color: "#E0D2F0" },
+    { id: "rose",   name: "ローズ",   color: "#F3C9D5" },
+    { id: "aqua",   name: "アクア",   color: "#D3EAEA" },
+    { id: "sand",   name: "サンド",   color: "#E9E4D4" },
+  ];
+
+  const HEAD = '<ellipse cx="150" cy="165" rx="48" ry="56"/>';
+  const TORSO = "M26 400 C26 322 66 276 124 260 L176 260 C234 276 274 322 274 400 Z";
+  const NECK = "M132 200 L132 266 Q150 281 168 266 L168 200 Z";
+  const FRONT_SHORT = "M101 165 C97 112 124 96 150 96 C176 96 203 112 199 165 C192 142 176 128 150 128 C124 128 108 142 101 165 Z";
+
+  function hairParts(id, col) {
+    const f = (d) => `<path d="${d}" fill="${col}"/>`;
+    switch (id) {
+      case "short":    return { back: "", front: f(FRONT_SHORT) };
+      case "long":     return { back: f("M98 150 C92 88 208 88 202 150 L212 300 L88 300 Z"), front: f(FRONT_SHORT) };
+      case "bob":      return { back: f("M97 150 C93 92 207 92 203 150 L206 222 Q150 236 94 222 Z"), front: f(FRONT_SHORT) };
+      case "ponytail": return { back: "", front: f(FRONT_SHORT) + f("M196 140 C230 140 246 175 236 215 C232 232 222 238 218 226 C224 200 216 168 196 160 Z") + `<circle cx="198" cy="150" r="6" fill="#E76F51"/>` };
+      case "bun":      return { back: "", front: f(FRONT_SHORT) + `<circle cx="150" cy="84" r="22" fill="${col}"/>` };
+      case "curly": {
+        const cs = [[108,128,26],[150,102,30],[192,128,26],[96,165,19],[204,165,19],[128,108,24],[172,108,24]];
+        return { back: cs.map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${col}"/>`).join(""),
+                 front: f("M104 150 C108 126 192 126 196 150 C186 140 170 136 150 136 C130 136 114 140 104 150Z") };
+      }
+      case "wave":     return { back: "", front: f("M100 168 C96 118 120 94 160 92 C196 90 212 130 199 168 C196 146 186 130 170 124 C150 138 118 140 100 168Z") };
+      case "buzz":     return { back: "", front: f("M103 150 C103 118 128 104 150 104 C172 104 197 118 197 150 C190 130 172 120 150 120 C128 120 110 130 103 150Z") };
+    }
+    return { back: "", front: "" };
+  }
+
+  function clothesParts(id, col) {
+    const dark = shade(col, -0.25);
+    const torso = `<path d="${TORSO}" fill="${col}"/>`;
+    let pre = "", post = "";
+    switch (id) {
+      case "tshirt": break;
+      case "shirt":
+        post = `<path d="M118 262 L146 302 L124 306 L104 276 Z" fill="#fff"/><path d="M182 262 L154 302 L176 306 L196 276 Z" fill="#fff"/>` +
+               `<path d="M150 302 L150 400" stroke="${dark}" stroke-width="3"/>` +
+               [330, 358, 386].map((y) => `<circle cx="150" cy="${y}" r="3" fill="#fff"/>`).join("");
+        break;
+      case "hoodie":
+        pre = `<path d="M104 250 C104 228 126 222 150 222 C174 222 196 228 196 250 C196 275 170 285 150 285 C130 285 104 275 104 250Z" fill="${dark}"/>`;
+        post = `<path d="M140 290 L138 332 M160 290 L162 332" stroke="#fff" stroke-width="3" stroke-linecap="round"/>` +
+               `<path d="M92 372 L208 372 L218 400 L82 400Z" fill="${dark}"/>`;
+        break;
+      case "turtle":
+        post = `<rect x="126" y="214" width="48" height="56" rx="16" fill="${col}"/><path d="M128 238 L172 238" stroke="${dark}" stroke-width="3"/>`;
+        break;
+      case "suit":
+        post = `<path d="M130 262 L150 322 L170 262 Z" fill="#fff"/><path d="M124 262 L150 334 L108 322 Z" fill="${shade(col, 0.12)}"/><path d="M176 262 L150 334 L192 322 Z" fill="${shade(col, 0.12)}"/>` +
+               `<path d="M146 290 L154 290 L158 338 L150 352 L142 338 Z" fill="#C9433B"/>`;
+        break;
+      case "stripe": {
+        const lines = [];
+        for (let y = 276; y < 400; y += 26) lines.push(`<rect x="0" y="${y}" width="300" height="9" fill="#fff" opacity="0.75"/>`);
+        post = `<g clip-path="url(#torsoClip)">${lines.join("")}</g>`;
+        break;
+      }
+    }
+    return { pre, torso, post };
+  }
+
+  function shade(hex, amt) {
+    const n = parseInt(hex.slice(1), 16);
+    let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    const t = amt < 0 ? 0 : 255, p = Math.abs(amt);
+    r = Math.round((t - r) * p + r); g = Math.round((t - g) * p + g); b = Math.round((t - b) * p + b);
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  function mainPhoto(o) {
+    const h = HAIRS.find((x) => x.id === o.hair) || HAIRS[0];
+    const hcol = o.hairColor || h.color, ccol = o.clothesColor || null;
+    const c = CLOTHES.find((x) => x.id === o.clothes) || CLOTHES[0];
+    const b = BGS.find((x) => x.id === o.bg) || BGS[0];
+    const hp = hairParts(h.id, hcol);
+    const cp = clothesParts(c.id, ccol || c.color);
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="300" height="400">` +
+      `<defs><clipPath id="torsoClip"><path d="${TORSO}"/></clipPath></defs>` +
+      `<rect width="300" height="400" fill="${b.color}"/>` +
+      `<circle cx="150" cy="215" r="118" fill="#fff" opacity="0.38"/>` +
+      hp.back + cp.torso + cp.pre +
+      `<path d="${NECK}" fill="${SIL}"/>` + cp.post +
+      `<g fill="${SIL}">${HEAD}</g>` + hp.front + itemSvg(o.item) + `</svg>`;
+  }
+
+  const API = { HAIRS, CLOTHES, BGS, HAIR_COLORS, CLOTHES_COLORS, ITEMS, mainPhoto };
+  if (typeof module !== "undefined") module.exports = API; else root.PARTS = API;
+})(typeof window !== "undefined" ? window : globalThis);
+</script>
+<script>(function (root) {
+  let VARS = {};
+  function setVars(v) { VARS = v || {}; }
+
+  function fill(o, rand) {
+    if (o.t.indexOf("{") < 0) return o;
+    const t = o.t.replace(/\{(\w+)\}/g, (m, k) => (VARS[k] ? VARS[k][Math.floor(rand() * VARS[k].length)] : m));
+    return Object.assign({}, o, { t, base: o });
+  }
+  function shuffle(arr, rand) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+  function shownOptions(slot, rand, n) {
+    n = n || 4;
+    const pool = slot.opts;
+    if (pool.length <= n) return pool.map((o) => fill(o, rand));
+    if (slot.id === "greet") {
+      return [pool[0]].concat(shuffle(pool.slice(1), rand).slice(0, n - 1)).map((o) => fill(o, rand));
+    }
+    return shuffle(pool, rand).slice(0, n).map((o) => fill(o, rand));
+  }
+  function compose(D, picks) {
+    return D.TEMPLATE.map((line) => line.replace(/\{(\w+)\}/g, (m, id) => (picks[id] ? picks[id].t : "＿＿")));
+  }
+
+  function genNPC(D, P, rand, used, usedOpts, avoid) {
+    const picks = {};
+    D.SLOTS.forEach((s) => {
+      const seen = usedOpts[s.id] || (usedOpts[s.id] = []);
+      const mine = avoid[s.id] && (avoid[s.id].base || avoid[s.id]);
+      let cand = s.opts.filter((o) => seen.indexOf(o) < 0 && o !== mine);
+      if (!cand.length) cand = s.opts.filter((o) => seen.indexOf(o) < 0);
+      if (!cand.length) cand = s.opts;
+      const o = cand[Math.floor(rand() * cand.length)];
+      seen.push(o);
+      picks[s.id] = fill(o, rand);
+    });
+    const names = D.NAMES.filter((n) => used.indexOf(n) < 0);
+    const pick = (arr) => arr[Math.floor(rand() * arr.length)];
+    const sp = pick(D.SPECIES);
+    return {
+      name: pick(names.length ? names : D.NAMES),
+      photo: {
+        hair: pick(P.HAIRS).id, hairColor: pick(P.HAIR_COLORS).color,
+        clothes: pick(P.CLOTHES).id, clothesColor: pick(P.CLOTHES_COLORS).color,
+        bg: pick(P.BGS).id, item: pick(P.ITEMS).id,
+      },
+      species: sp.id, n: pick(sp.opts),
+      pers: shuffle(D.PERSONALITY, rand).slice(0, 3).map((o) => o.t),
+      picks, lines: compose(D, picks),
+    };
+  }
+  function genField(D, P, rand, count, avoid) {
+    const used = [], usedOpts = {}, list = [];
+    for (let i = 0; i < count; i++) { const n = genNPC(D, P, rand, used, usedOpts, avoid || {}); used.push(n.name); list.push(n); }
+    return list;
+  }
+
+  const API = { setVars, shuffle, shownOptions, compose, genField };
+  if (typeof module !== "undefined") module.exports = API; else root.CORE = API;
+})(typeof window !== "undefined" ? window : globalThis);
+</script>
+<script>(function () {
+  const D = window.GAME_DATA, P = window.PARTS, C = window.CORE;
+  C.setVars(D.VARS);
+  const rand = Math.random;
+  const $ = (s, r) => (r || document).querySelector(s);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const FLOW = ["title", "photo", "age", "pers", "intro", "confirm", "done", "others"];
+  const NG = ["死ね", "しね", "殺す", "ころす", "うんこ", "ちんこ", "ちんぽ", "まんこ", "おっぱい", "せっくす", "えっち", "fuck", "shit", "sex"];
+  const ORDER = ["greet", "who1", "passive", "industry", "role", "with", "where", "what", "wish_who", "wish_what", "wish_feel", "closing"];
+  const SLOT = {}; D.SLOTS.forEach((s) => (SLOT[s.id] = s));
+  const SP = {}; D.SPECIES.forEach((s) => (SP[s.id] = s));
+
+  const KEY = "template-profile.nickname";
+  const clip = (v, n) => Array.from(v).slice(0, n).join("");
+  const loadName = () => { try { const v = clip(localStorage.getItem(KEY) || "", 10); return nameError(v) ? "" : v; } catch (_) { return ""; } };
+  const saveName = (v) => { try { localStorage.setItem(KEY, v); } catch (_) {} };
+  let S, token = 0;
+  const PKEY = "template-profile.photo";
+  const savedPhoto = () => {
+    try {
+      const o = JSON.parse(localStorage.getItem(PKEY) || "null"); if (!o) return null;
+      const ok = P.HAIRS.some((x) => x.id === o.hair) && P.CLOTHES.some((x) => x.id === o.clothes) && P.BGS.some((x) => x.id === o.bg) && P.ITEMS.some((x) => x.id === o.item)
+        && P.HAIR_COLORS.some((x) => x.color === o.hairColor) && P.CLOTHES_COLORS.some((x) => x.color === o.clothesColor);
+      return ok ? { hair: o.hair, hairColor: o.hairColor, clothes: o.clothes, clothesColor: o.clothesColor, bg: o.bg, item: o.item } : null;
+    } catch (_) { return null; }
+  };
+  const savePhoto = () => { try { localStorage.setItem(PKEY, JSON.stringify(S.photo)); } catch (_) {} };
+  const AKEY = "template-profile.age";
+  const savedAge = () => {
+    try {
+      const o = JSON.parse(localStorage.getItem(AKEY) || "null"); if (!o) return null;
+      const sp = D.SPECIES.find((x) => x.id === o.species);
+      return sp && sp.opts.includes(o.n) ? { species: sp.id, n: o.n } : null;
+    } catch (_) { return null; }
+  };
+  const saveAge = () => { try { localStorage.setItem(AKEY, JSON.stringify({ species: S.species, n: S.n })); } catch (_) {} };
+  const pickOf = (a) => a[Math.floor(rand() * a.length)];
+  function fresh() {
+    token++;
+    const shown = {}, picks = {};
+    D.SLOTS.forEach((s) => { shown[s.id] = C.shownOptions(s, rand, 4); if (s.opts.length === 1) picks[s.id] = shown[s.id][0]; });
+    const sp0 = pickOf(D.SPECIES);
+    const n0 = pickOf(sp0.opts);
+    S = {
+      screen: "title", name: loadName(), defName: pickOf(D.DEFAULT_NAMES),
+      photo: savedPhoto() || { hair: pickOf(P.HAIRS).id, hairColor: pickOf(P.HAIR_COLORS).color, clothes: pickOf(P.CLOTHES).id, clothesColor: pickOf(P.CLOTHES_COLORS).color, bg: pickOf(P.BGS).id, item: pickOf(P.ITEMS).id },
+      species: (savedAge() || { species: sp0.id }).species, n: (savedAge() || { n: n0 }).n,
+      persShown: C.shuffle(D.PERSONALITY, rand).slice(0, 12), pers: [],
+      shown, picks, step: 0, npcs: [], detail: null, img: null, toast: "",
+    };
+  }
+  fresh();
+
+  const ageParts = (p) => { const sp = SP[p.species]; return [`${sp.name}でいうと`, `${p.n}${sp.unit}`]; };
+  const ageText = (p) => ageParts(p).join("");
+  const ageHTML = (p) => { const a = ageParts(p); return `<span class="ag1">${esc(a[0])}</span><span class="ag2">${esc(a[1])}</span>`; };
+  const PC = {}; D.PERSONALITY.forEach((o) => (PC[o.t] = o.color));
+  const luminance = (hex) => { const n = parseInt(hex.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0); };
+  const textOn = (hex) => (luminance(hex) + 0.05) / (luminance("#221F3C") + 0.05) > 1.05 / (luminance(hex) + 0.05) ? "#221F3C" : "#FFFFFF";
+  const pstyle = (t) => `background:${PC[t]};color:${textOn(PC[t])}`;
+  function me() {
+    return { name: S.name, photo: S.photo, species: S.species, n: S.n, pers: S.pers.map((o) => o.t), lines: C.compose(D, S.picks) };
+  }
+
+  const square = (photo) => P.mainPhoto(photo).replace('viewBox="0 0 300 400" width="300" height="400"', 'viewBox="0 40 300 300" width="300" height="300"');
+  function profileHTML(p) {
+    const svg = square(p.photo);
+    return `<div class="profile">
+      <div class="head">
+        <div class="photo sq-me">${svg}</div>
+        <div class="meta">
+          <div class="name">${esc(p.name)}</div>
+          <div class="age">${ageHTML(p)}</div>
+          <div class="ptags inl">${p.pers.map((t) => `<span style="${pstyle(t)}">${esc(t)}</span>`).join("")}</div>
+        </div>
+      </div>
+      <div class="sentence">${p.lines.map((l) => `<p>${esc(l)}</p>`).join("")}</div>
+    </div>`;
+  }
+  function stepper() {
+    const k = FLOW.indexOf(S.screen);
+    return `<div class="stepper" aria-hidden="true">${FLOW.slice(1, 6).map((_, j) => `<i class="${j <= k - 1 ? "on" : ""}"></i>`).join("")}</div>`;
+  }
+  function bar(back, next, label, disabled) {
+    return `<div class="bar">${back ? `<button class="btn ghost" data-act="back">戻る</button>` : ""}<button class="btn" data-act="${next}" ${disabled ? "disabled" : ""}>${label}</button></div>`;
+  }
+  const LOGO = `<svg viewBox="0 0 96 96" aria-hidden="true"><rect x="8" y="12" width="80" height="72" rx="14" fill="var(--surface)" stroke="var(--ink)" stroke-width="5"/><circle cx="30" cy="38" r="9" fill="var(--ink)"/><rect x="46" y="29" width="30" height="7" rx="3.5" fill="var(--ink)"/><rect x="46" y="42" width="22" height="7" rx="3.5" fill="var(--ink)" opacity=".35"/><rect x="18" y="58" width="60" height="14" rx="5" fill="var(--tint)" stroke="var(--accent)" stroke-width="4" stroke-dasharray="6 4"/></svg>`;
+  const R = {};
+  R.title = () => `<div class="screen" style="justify-content:center;gap:22px">
+      <div class="logo">${LOGO}<h1 class="wordmark">テンプレート・プロフィール</h1></div>
+      <label class="f" for="nick">ニックネーム<input id="nick" type="text" maxlength="10" autocomplete="off" value="${esc(S.name)}" placeholder="${esc(S.defName)}"></label>
+      <div class="err" id="nickerr"></div>
+      <div class="bar"><button class="btn" data-act="next" ${S.name.trim() && nameError(S.name) ? "disabled" : ""}>はじめる</button></div></div>`;
+
+  R.photo = () => {
+    const chips = (key, list) => `<div class="row">${list.map((o) => `<button class="chip" data-act="ph" data-k="${key}" data-v="${o.id}" aria-pressed="${S.photo[key] === o.id}">${esc(o.name)}</button>`).join("")}</div>`;
+    const sw = (key, list) => `<div class="swatches">${list.map((o) => `<button class="sw ${o.color.toUpperCase() > "#DDDDDD" ? "light" : ""}" style="background:${o.color}" data-act="phc" data-k="${key}" data-v="${o.color}" aria-label="${esc(o.name)}" aria-pressed="${S.photo[key].toLowerCase() === o.color.toLowerCase()}"></button>`).join("")}</div>`;
+    return `<div class="screen">${stepper()}
+      <h2>プロフィール写真</h2>
+      <div class="pvwrap"><div class="photo sq" style="border-radius:20px">${square(S.photo)}</div></div>
+      <h3>髪型</h3>${chips("hair", P.HAIRS)}
+      <h3>髪の色</h3>${sw("hairColor", P.HAIR_COLORS)}
+      <h3>服</h3>${chips("clothes", P.CLOTHES)}
+      <h3>服の色</h3>${sw("clothesColor", P.CLOTHES_COLORS)}
+      <h3>背景</h3><div class="swatches">${P.BGS.map((o) => `<button class="sw light" style="background:${o.color}" data-act="ph" data-k="bg" data-v="${o.id}" aria-label="${esc(o.name)}" aria-pressed="${S.photo.bg === o.id}"></button>`).join("")}</div>
+      <h3>アイテム</h3>${chips("item", P.ITEMS)}
+      ${bar(true, "next", "次へ")}</div>`;
+  };
+
+  R.age = () => {
+    const sp = SP[S.species];
+    return `<div class="screen">${stepper()}
+      <h2>年齢</h2>
+      <div class="row">${D.SPECIES.map((s) => `<button class="chip" data-act="sp" data-v="${s.id}" aria-pressed="${s.id === S.species}">${esc(s.name)}</button>`).join("")}</div>
+      <label class="f" for="agen"><span class="sr">年齢</span>
+        <select id="agen">${sp.opts.map((o) => `<option value="${o}" ${o === S.n ? "selected" : ""}>${o}${sp.unit}</option>`).join("")}</select></label>
+      <div class="agebox"><div class="age">${ageHTML(me())}</div></div>
+      ${bar(true, "next", "次へ")}</div>`;
+  };
+
+  R.pers = () => `<div class="screen">${stepper()}
+      <h2>性格を3つ選んでください（${S.pers.length}/3）</h2>
+      <div class="row">${S.persShown.map((o) => `<button class="chip pc ${S.pers.length >= 3 && !S.pers.includes(o) ? "dim" : ""}" style="background:${o.color};color:${textOn(o.color)}" data-act="pers" data-v="${esc(o.t)}" aria-pressed="${S.pers.includes(o)}">${S.pers.includes(o) ? "✓ " : ""}${esc(o.t)}</button>`).join("")}</div>
+      ${bar(true, "next", "次へ", S.pers.length !== 3)}</div>`;
+
+  function previewHTML(curId) {
+    return D.TEMPLATE.map((line) => {
+      let out = "", last = 0, m; const re = /\{(\w+)\}/g;
+      while ((m = re.exec(line))) {
+        out += esc(line.slice(last, m.index)); last = re.lastIndex;
+        const id = m[1];
+        out += S.picks[id] ? (SLOT[id].opts.length > 1 ? `<span class="fill${id === curId ? " cur" : ""}" role="button" tabindex="0" data-act="goto" data-id="${id}">${esc(S.picks[id].t)}</span>` : esc(S.picks[id].t)) : id === curId ? '<span class="cur">＿＿＿</span>' : '<span class="ph">＿＿</span>';
+      }
+      return `<p>${out + esc(line.slice(last))}</p>`;
+    }).join("");
+  }
+  R.intro = () => {
+    const id = ORDER[S.step];
+    return `<div class="screen">${stepper()}
+      <div class="card"><div class="sentence">${previewHTML(id)}</div></div>
+      <div class="opts">${S.shown[id].map((o, i) => `<button class="chip block" data-act="pick" data-i="${i}" aria-pressed="${S.picks[id] === o}">${esc(o.t)}</button>`).join("")}</div>
+      <div class="bar"><button class="btn ghost" data-act="iback">戻る</button></div></div>`;
+  };
+
+  R.confirm = () => `<div class="screen">${stepper()}
+      <h2>プロフィールの確認</h2>
+      <div class="card">${profileHTML(me())}</div>
+      <div class="bar"><button class="btn ghost" data-act="back">戻る</button><button class="btn" data-act="publish">プロフィール完成</button></div></div>`;
+
+  const SUPPORT = "https://ofuse.me/d03803b1", SITE = "https://paochanz.com";
+  R.done = () => `<div class="screen">
+      ${S.img ? `<img class="result-img" src="${S.img}" alt="${esc(resultText())}">` : `<div class="card">${profileHTML(me())}</div>`}
+      ${S.img ? `<p class="hint">画像を長押しすると保存できます</p>` : ""}
+      <div class="row"><button class="btn ghost" data-act="copy" style="flex:1">文章でコピー</button></div>
+      <div class="bar"><button class="btn ghost" data-act="toothers">ほかの人のプロフィール</button><button class="btn" data-act="again">もう一度作る</button></div>
+      <p class="support"><a href="${SITE}" target="_blank" rel="noopener noreferrer">paochanz.com</a></p>
+      <p class="support">気に入ったら <a href="${SUPPORT}" target="_blank" rel="noopener noreferrer">OFUSEで応援する</a></p>${S.toast ? `<div class="toast">${esc(S.toast)}</div>` : ""}</div>`;
+
+  R.others = () => `<div class="screen">
+      <h2>ほかの人のプロフィール</h2>
+      <div class="grid2">${S.npcs.map((n, i) => `<div class="pcard" role="button" tabindex="0" data-act="detail" data-i="${i}">
+          <div class="photo">${P.mainPhoto(n.photo)}</div>
+          <div class="nm">${esc(n.name)}</div><div class="ag">${ageHTML(n)}</div><div class="mini">${n.pers.map((t) => `<span style="${pstyle(t)}">${esc(t)}</span>`).join("")}</div></div>`).join("")}</div>
+      <div class="bar"><button class="btn ghost" data-act="todone">戻る</button><button class="btn" data-act="more">別の10人を見る</button></div>
+      ${S.detail != null ? sheet() : ""}</div>`;
+
+  function sheet() {
+    const n = S.npcs[S.detail];
+    return `<div class="sheet" data-act="closesheet"><div role="dialog" aria-modal="true" aria-label="${esc(n.name)}のプロフィール">
+      <div class="card">${profileHTML(n)}</div>
+      <div class="row"><button class="btn" id="sheetclose" data-act="closesheet2">閉じる</button></div></div></div>`;
+  }
+  const app = $("#app");
+  function render(keepScroll) {
+    const y = window.scrollY, a = document.activeElement;
+    const sel = a && a.dataset && a.dataset.act ? ["act", "k", "v", "i", "id"].filter((k) => a.dataset[k] != null).map((k) => `[data-${k}="${CSS.escape(a.dataset[k])}"]`).join("") : "";
+    app.innerHTML = R[S.screen]();
+    window.scrollTo(0, keepScroll ? y : 0);
+    const again = sel && $(`[data-act]${sel}`);
+    if (again) again.focus({ preventScroll: true });
+    if (S.screen === "others" && S.detail != null) { const c = $("#sheetclose"); if (c) c.focus(); }
+  }
+  function go(name) { S.screen = name; S.toast = ""; render(); }
+  let toastTimer = 0;
+  function toast(msg) { S.toast = msg; render(true); clearTimeout(toastTimer); toastTimer = setTimeout(() => { S.toast = ""; if (S.screen === "done") render(true); }, 1800); }
+  function nameError(v) {
+    const t = v.trim(); if (!t) return "";
+    const low = t.normalize("NFKC").toLowerCase().replace(/\s/g, "").replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 96));
+    if (NG.some((w) => low.includes(w))) return "このニックネームは使えません。";
+    return "";
+  }
+  app.addEventListener("input", (e) => {
+    if (e.target.id === "nick") {
+      S.name = clip(e.target.value, 10);
+      if (S.name.trim() && !nameError(S.name)) saveName(S.name);
+      const er = nameError(S.name);
+      $("#nickerr").textContent = er;
+      $('[data-act="next"]').disabled = !!er;
+    }
+  });
+  app.addEventListener("change", (e) => { if (e.target.id === "agen") { S.n = +e.target.value; render(true); } });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.screen === "others" && S.detail != null) { S.detail = null; render(true); } });
+  app.addEventListener("keydown", (e) => {
+    if ((e.key === "Enter" || e.key === " ") && e.target.dataset && (e.target.dataset.act === "detail" || e.target.dataset.act === "goto")) { e.preventDefault(); e.target.click(); }
+  });
+  function advance() {
+    let k = S.step + 1;
+    while (k < ORDER.length && S.picks[ORDER[k]]) k++;
+    if (k >= ORDER.length) { go("confirm"); } else { S.step = k; render(); }
+  }
+  app.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-act]"); if (!el) return;
+    const act = el.dataset.act, v = el.dataset.v, i = el.dataset.i != null ? +el.dataset.i : null;
+    if (act === "closesheet") { if (e.target === el) { S.detail = null; render(true); } return; }
+    switch (act) {
+      case "next": {
+        if (S.screen === "title") { const er = nameError(S.name); if (er) { $("#nickerr").textContent = er; return; } if (!S.name.trim()) S.name = S.defName; else saveName(S.name); }
+        if (S.screen === "photo") savePhoto();
+        if (S.screen === "age") saveAge();
+        if (S.screen === "pers") S.step = 0;
+        go(FLOW[FLOW.indexOf(S.screen) + 1]); break;
+      }
+      case "back": go(FLOW[FLOW.indexOf(S.screen) - 1]); break;
+      case "ph": case "phc": if (el.dataset.k in S.photo) { S.photo[el.dataset.k] = v; render(true); } break;
+      case "sp": { S.species = v; const o = SP[v].opts; if (!o.includes(S.n)) S.n = o[Math.floor(o.length / 2)]; render(true); break; }
+      case "pers": {
+        const o = S.persShown.find((x) => x.t === v), k = S.pers.indexOf(o);
+        if (k >= 0) S.pers.splice(k, 1); else if (S.pers.length < 3) S.pers.push(o);
+        render(true); break;
+      }
+      case "pick": {
+        const id = ORDER[S.step], at = S.step;
+        S.picks[id] = S.shown[id][i]; render(true);
+        setTimeout(() => { if (S.screen === "intro" && S.step === at) advance(); }, 240);
+        break;
+      }
+      case "goto": S.step = ORDER.indexOf(el.dataset.id); render(true); break;
+      case "iback": if (S.step > 0) { S.step--; render(); } else go("pers"); break;
+      case "publish": S.img = null; go("done"); { const my = token; makeImage().then((u) => { if (token === my) { S.img = u; if (S.screen === "done") render(true); } }, () => {}); } break;
+      case "toothers": S.npcs = C.genField(D, P, rand, 10, S.picks); S.detail = null; go("others"); break;
+      case "todone": S.detail = null; go("done"); break;
+      case "more": S.npcs = C.genField(D, P, rand, 10, S.picks); S.detail = null; render(); break;
+      case "detail": S.detail = i; render(true); break;
+      case "closesheet2": S.detail = null; render(true); break;
+      case "copy": copyText(); break;
+      case "again": fresh(); go("title"); break;
+    }
+  });
+
+  function resultText() {
+    const p = me();
+    return `【テンプレート・プロフィール】\n${p.name}（${ageText(p)}）\n${p.lines.join("\n")}`;
+  }
+  function copyText() {
+    const t = resultText();
+    const ok = () => toast("コピーしました");
+    const fb = () => {
+      const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); ok(); } catch (_) { toast("コピーできませんでした"); }
+      ta.remove();
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, fb); else fb();
+  }
+  function svgImg(svg) {
+    return new Promise((res, rej) => {
+      const im = new Image(); im.onload = () => res(im); im.onerror = rej;
+      im.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    });
+  }
+  const NOT_START = new Set("、。，．・…〜：；？！）」』】〕〉》〗ー々ゝゞぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ゛゜％)]}!?,.:;".split(""));
+  const NOT_END = new Set("（「『【〔〈《〗([{".split(""));
+  function wrap(ctx, text, maxW) {
+    const out = []; let cur = "";
+    for (const ch of text) {
+      if (cur && ctx.measureText(cur + ch).width > maxW) {
+        const brk = Array.from(cur); let carry = "";
+        if (NOT_START.has(ch) && brk.length > 1) carry = brk.pop();
+        while (brk.length > 1 && NOT_END.has(brk[brk.length - 1])) carry = brk.pop() + carry;
+        out.push(brk.join("")); cur = carry + ch;
+      } else cur += ch;
+    }
+    if (cur) out.push(cur); return out;
+  }
+  async function makeImage() {
+    try { const sample = S.name + ageText(me()) + me().pers.join("") + me().lines.join("") + "テンプレート・プロフィール";
+      await Promise.race([Promise.all([900, 700, 500].map((w) => document.fonts.load(`${w} 28px "Zen Maru Gothic"`, sample))), sleep(1500)]); } catch (_) {}
+    const dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const col = dark ? { bg: "#14132A", card: "#201E3B", ink: "#F2F0FF", muted: "#A9A5C9", acc: "#FF6F92", tint: "#40233A" }
+                     : { bg: "#F3F1FA", card: "#FFFFFF", ink: "#221F3C", muted: "#6C6888", acc: "#C8325A", tint: "#FFE4EB" };
+    const FONT = '"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif';
+    const W = 720, PAD = 28, IP = 28, PH = 250, CW = W - PAD * 2;
+    const my = me();
+    const imLogo = await svgImg(LOGO.replace(/var\(--surface\)/g, col.card).replace(/var\(--ink\)/g, col.ink).replace(/var\(--tint\)/g, col.tint).replace(/var\(--accent\)/g, col.acc).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" '));
+    const imMe = await svgImg(square(my.photo));
+    function run(ctx, real) {
+      const tx = (t, x, y, size, w, color) => { ctx.font = `${w} ${size}px ${FONT}`; ctx.fillStyle = color; ctx.textBaseline = "top"; if (real) ctx.fillText(t, x, y); };
+      const para = (t, x, y, maxW, size, w, color, lh) => { ctx.font = `${w} ${size}px ${FONT}`; const ls = wrap(ctx, t, maxW); ls.forEach((l, k) => tx(l, x, y + k * lh, size, w, color)); return ls.length * lh; };
+      const rr = (x, y, w, h, r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); };
+      let y = PAD;
+      if (real) ctx.drawImage(imLogo, PAD, y, 56, 56);
+      tx("テンプレート・プロフィール", PAD + 70, y + 12, 32, 900, col.ink); y += 76;
+      const top = y, cx = PAD + IP; let cy = top + IP;
+      if (real) { ctx.save(); rr(cx, cy, PH, PH, 22); ctx.clip(); ctx.drawImage(imMe, cx, cy, PH, PH); ctx.restore(); }
+      const rx = cx + PH + 26, rw = PAD + CW - IP - rx;
+      let ry = cy;
+      ry += para(my.name, rx, ry, rw, 38, 900, col.ink, 48);
+      const ap = ageParts(my); ry += para(ap[0], rx, ry, rw, 20, 700, col.muted, 28); ry += para(ap[1], rx, ry, rw, 34, 900, col.ink, 42) + 10;
+      let px = rx;
+      my.pers.forEach((t) => {
+        ctx.font = `900 24px ${FONT}`; const w = ctx.measureText(t).width + 24;
+        if (px + w > rx + rw) { px = rx; ry += 46; }
+        if (real) { ctx.fillStyle = PC[t]; rr(px, ry, w, 38, 10); ctx.fill(); }
+        tx(t, px + 12, ry + 5, 24, 900, textOn(PC[t])); px += w + 8;
+      });
+      ry += 46;
+      cy = Math.max(cy + PH, ry) + 26;
+      my.lines.forEach((l) => { cy += para(l, cx, cy, CW - IP * 2, 26, 500, col.ink, 40) + 4; });
+      const bottom = cy + IP;
+      if (real) { ctx.save(); ctx.globalCompositeOperation = "destination-over"; ctx.fillStyle = col.card; rr(PAD, top, CW, bottom - top, 28); ctx.fill(); ctx.restore(); }
+      return bottom + PAD;
+    }
+    const mc = document.createElement("canvas"); mc.width = W; mc.height = 10;
+    const H = Math.ceil(run(mc.getContext("2d"), false));
+    const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+    const ctx = cv.getContext("2d");
+    run(ctx, true);
+    ctx.globalCompositeOperation = "destination-over"; ctx.fillStyle = col.bg; ctx.fillRect(0, 0, W, H);
+    return cv.toDataURL("image/png");
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
