@@ -86,6 +86,7 @@
     return `<div class="bar">${back ? `<button class="btn ghost" data-act="back">戻る</button>` : ""}<button class="btn" data-act="${next}" ${disabled ? "disabled" : ""}>${label}</button></div>`;
   }
   const LOGO = `<svg viewBox="0 0 96 96" aria-hidden="true"><rect x="8" y="12" width="80" height="72" rx="14" fill="var(--surface)" stroke="var(--ink)" stroke-width="5"/><circle cx="30" cy="38" r="9" fill="var(--ink)"/><rect x="46" y="29" width="30" height="7" rx="3.5" fill="var(--ink)"/><rect x="46" y="42" width="22" height="7" rx="3.5" fill="var(--ink)" opacity=".35"/><rect x="18" y="58" width="60" height="14" rx="5" fill="var(--tint)" stroke="var(--accent)" stroke-width="4" stroke-dasharray="6 4"/></svg>`;
+  const SHUFFLE = (act, label) => `<button class="dice" data-act="${act}" aria-label="${label}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.9M20 20v-4h-4"/></svg></button>`;
   const R = {};
   R.title = () => `<div class="screen" style="justify-content:center;gap:22px">
       <div class="logo">${LOGO}<h1 class="wordmark">テンプレート・プロフィール</h1></div>
@@ -98,7 +99,7 @@
     const sw = (key, list) => `<div class="swatches">${list.map((o) => `<button class="sw ${o.color.toUpperCase() > "#DDDDDD" ? "light" : ""}" style="background:${o.color}" data-act="phc" data-k="${key}" data-v="${o.color}" aria-label="${esc(o.name)}" aria-pressed="${S.photo[key].toLowerCase() === o.color.toLowerCase()}"></button>`).join("")}</div>`;
     return `<div class="screen">${stepper()}
       <h2>プロフィール写真</h2>
-      <div class="pvwrap"><div class="photo sq" style="border-radius:20px">${square(S.photo)}</div></div>
+      <div class="pvwrap"><div class="photo sq" style="border-radius:20px">${square(S.photo)}</div>${SHUFFLE("rphoto", "写真をランダムにする")}</div>
       <h3>髪型</h3>${chips("hair", P.HAIRS)}
       <h3>髪の色</h3>${sw("hairColor", P.HAIR_COLORS)}
       <h3>服</h3>${chips("clothes", P.CLOTHES)}
@@ -120,7 +121,7 @@
   };
 
   R.pers = () => `<div class="screen">${stepper()}
-      <h2>性格を3つ選んでください（${S.pers.length}/3）</h2>
+      <div class="head-row"><h2>性格を3つ選んでください（${S.pers.length}/3）</h2>${SHUFFLE("rpers", "性格をランダムに3つ選ぶ")}</div>
       <div class="row">${S.persShown.map((o) => `<button class="chip pc ${S.pers.length >= 3 && !S.pers.includes(o) ? "dim" : ""}" style="background:${o.color};color:${textOn(o.color)}" data-act="pers" data-v="${esc(o.t)}" aria-pressed="${S.pers.includes(o)}">${S.pers.includes(o) ? "✓ " : ""}${esc(o.t)}</button>`).join("")}</div>
       ${bar(true, "next", "次へ", S.pers.length !== 3)}</div>`;
 
@@ -215,7 +216,7 @@
     if (act === "closesheet") { if (e.target === el) { S.detail = null; render(true); } return; }
     switch (act) {
       case "next": {
-        if (S.screen === "title") { const er = nameError(S.name); if (er) { $("#nickerr").textContent = er; return; } if (!S.name.trim()) S.name = S.defName; else saveName(S.name); }
+        if (S.screen === "title") { const er = nameError(S.name); if (er) { $("#nickerr").textContent = er; return; } if (!S.name.trim()) S.name = S.defName; saveName(S.name); }
         if (S.screen === "photo") savePhoto();
         if (S.screen === "age") saveAge();
         if (S.screen === "pers") S.step = 0;
@@ -223,6 +224,8 @@
       }
       case "back": go(FLOW[FLOW.indexOf(S.screen) - 1]); break;
       case "ph": case "phc": if (el.dataset.k in S.photo) { S.photo[el.dataset.k] = v; render(true); } break;
+      case "rphoto": S.photo = { hair: pickOf(P.HAIRS).id, hairColor: pickOf(P.HAIR_COLORS).color, clothes: pickOf(P.CLOTHES).id, clothesColor: pickOf(P.CLOTHES_COLORS).color, bg: pickOf(P.BGS).id, item: pickOf(P.ITEMS).id }; render(true); break;
+      case "rpers": S.pers = C.shuffle(S.persShown, rand).slice(0, 3); render(true); break;
       case "sp": { S.species = v; const o = SP[v].opts; if (!o.includes(S.n)) S.n = o[Math.floor(o.length / 2)]; render(true); break; }
       case "pers": {
         const o = S.persShown.find((x) => x.t === v), k = S.pers.indexOf(o);
