@@ -201,17 +201,28 @@ select{appearance:none;-webkit-appearance:none;border:2px solid var(--accent);fo
   const NECK = "M132 200 L132 266 Q150 281 168 266 L168 200 Z";
   const FRONT_SHORT = "M101 165 C97 112 124 96 150 96 C176 96 203 112 199 165 C192 142 176 128 150 128 C124 128 108 142 101 165 Z";
 
+  const luminance = (hex) => { const n = parseInt(hex.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0); };
+  const OUTLINE_MIN_LUMINANCE = 0.3;
+  const outlined = (markup, col) => {
+    if (!markup) return "";
+    const outline = luminance(col) > OUTLINE_MIN_LUMINANCE ? markup.replace(/fill="@"/g, `fill="${shade(col, -0.45)}" stroke="${shade(col, -0.45)}" stroke-width="6" stroke-linejoin="round"`) : "";
+    return outline + markup.replace(/fill="@"/g, `fill="${col}"`);
+  };
   function hairParts(id, col) {
-    const f = (d) => `<path d="${d}" fill="${col}"/>`;
+    const parts = hairShapes(id);
+    return { back: outlined(parts.back, col), front: outlined(parts.front, col) };
+  }
+  function hairShapes(id) {
+    const f = (d) => `<path d="${d}" fill="@"/>`;
     switch (id) {
       case "short":    return { back: "", front: f(FRONT_SHORT) };
       case "long":     return { back: f("M98 150 C92 88 208 88 202 150 L212 300 L88 300 Z"), front: f(FRONT_SHORT) };
       case "bob":      return { back: f("M97 150 C93 92 207 92 203 150 L206 222 Q150 236 94 222 Z"), front: f(FRONT_SHORT) };
       case "ponytail": return { back: "", front: f(FRONT_SHORT) + f("M196 140 C230 140 246 175 236 215 C232 232 222 238 218 226 C224 200 216 168 196 160 Z") + `<circle cx="198" cy="150" r="6" fill="#E76F51"/>` };
-      case "bun":      return { back: "", front: f(FRONT_SHORT) + `<circle cx="150" cy="84" r="22" fill="${col}"/>` };
+      case "bun":      return { back: "", front: f(FRONT_SHORT) + `<circle cx="150" cy="84" r="22" fill="@"/>` };
       case "curly": {
         const cs = [[108,128,26],[150,102,30],[192,128,26],[96,165,19],[204,165,19],[128,108,24],[172,108,24]];
-        return { back: cs.map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${col}"/>`).join(""),
+        return { back: cs.map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="@"/>`).join(""),
                  front: f("M104 150 C108 126 192 126 196 150 C186 140 170 136 150 136 C130 136 114 140 104 150Z") };
       }
       case "wave":     return { back: "", front: f("M100 168 C96 118 120 94 160 92 C196 90 212 130 199 168 C196 146 186 130 170 124 C150 138 118 140 100 168Z") };
