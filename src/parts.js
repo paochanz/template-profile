@@ -99,7 +99,7 @@
 
   function clothesParts(id, col) {
     const dark = shade(col, -0.25);
-    const torso = `<path d="${TORSO}" fill="${col}"/>`;
+    const torso = (luminance(col) > OUTLINE_MIN_LUMINANCE ? `<path d="${TORSO}" fill="${shade(col, -0.45)}" stroke="${shade(col, -0.45)}" stroke-width="6" stroke-linejoin="round"/>` : "") + `<path d="${TORSO}" fill="${col}"/>`;
     let pre = "", post = "";
     switch (id) {
       case "tshirt": break;
