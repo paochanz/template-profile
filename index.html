@@ -203,14 +203,14 @@ select{appearance:none;-webkit-appearance:none;border:2px solid var(--accent);fo
 
   const luminance = (hex) => { const n = parseInt(hex.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0); };
   const OUTLINE_MIN_LUMINANCE = 0.3;
-  const outlined = (markup, col) => {
+  const outlined = (markup, col, plain) => {
     if (!markup) return "";
-    const outline = luminance(col) > OUTLINE_MIN_LUMINANCE ? markup.replace(/fill="@"/g, `fill="${shade(col, -0.45)}" stroke="${shade(col, -0.45)}" stroke-width="6" stroke-linejoin="round"`) : "";
+    const outline = !plain && luminance(col) > OUTLINE_MIN_LUMINANCE ? markup.replace(/fill="@"/g, `fill="${shade(col, -0.45)}" stroke="${shade(col, -0.45)}" stroke-width="6" stroke-linejoin="round"`) : "";
     return outline + markup.replace(/fill="@"/g, `fill="${col}"`);
   };
   function hairParts(id, col) {
     const parts = hairShapes(id);
-    return { back: outlined(parts.back, col), front: outlined(parts.front, col) };
+    return { back: outlined(parts.back, col), front: outlined(parts.front, col, parts.plainFront) };
   }
   function hairShapes(id) {
     const f = (d) => `<path d="${d}" fill="@"/>`;
@@ -222,8 +222,8 @@ select{appearance:none;-webkit-appearance:none;border:2px solid var(--accent);fo
       case "bun":      return { back: "", front: f(FRONT_SHORT) + `<circle cx="150" cy="84" r="22" fill="@"/>` };
       case "curly": {
         const cs = [[108,128,26],[150,102,30],[192,128,26],[96,165,19],[204,165,19],[128,108,24],[172,108,24]];
-        return { back: cs.map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="@"/>`).join(""),
-                 front: f("M104 150 C108 126 192 126 196 150 C186 140 170 136 150 136 C130 136 114 140 104 150Z") };
+        return { plainFront: true, back: cs.map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="@"/>`).join(""),
+                 front: f("M101 150 C100 82 200 82 199 150 L199 138 L101 138 Z") + [110, 126, 142, 158, 174, 190].map((x) => `<circle cx="${x}" cy="140" r="10" fill="@"/>`).join("") };
       }
       case "wave":     return { back: "", front: f("M100 168 C96 118 120 94 160 92 C196 90 212 130 199 168 C196 146 186 130 170 124 C150 138 118 140 100 168Z") };
       case "buzz":     return { back: "", front: f("M103 150 C103 118 128 104 150 104 C172 104 197 118 197 150 C190 130 172 120 150 120 C128 120 110 130 103 150Z") };
