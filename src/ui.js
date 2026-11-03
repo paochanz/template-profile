@@ -291,9 +291,11 @@
       const top = y, cx = PAD + IP; let cy = top + IP;
       if (real) { ctx.save(); rr(cx, cy, PH, PH, 22); ctx.clip(); ctx.drawImage(imMe, cx, cy, PH, PH); ctx.restore(); }
       const rx = cx + PH + 26, rw = PAD + CW - IP - rx;
-      let ry = cy;
-      ry += para(my.name, rx, ry, rw, 38, 900, col.ink, 48);
-      const ap = ageParts(my); ry += para(ap[0], rx, ry, rw, 20, 700, col.muted, 28); ry += para(ap[1], rx, ry, rw, 34, 900, col.ink, 42) + 10;
+      const ap = ageParts(my);
+      const blockH = [[my.name, 44, 900, 54], [ap[0], 22, 700, 30], [ap[1], 40, 900, 48]].reduce((sum, [t, size, w, lh]) => { ctx.font = `${w} ${size}px ${FONT}`; return sum + wrap(ctx, t, rw).length * lh; }, 0);
+      let ry = cy + Math.max(0, (PH - blockH) / 2);
+      ry += para(my.name, rx, ry, rw, 44, 900, col.ink, 54);
+      ry += para(ap[0], rx, ry, rw, 22, 700, col.muted, 30); ry += para(ap[1], rx, ry, rw, 40, 900, col.ink, 48);
       cy = Math.max(cy + PH, ry) + 26;
       my.lines.forEach((l) => { cy += para(l, cx, cy, CW - IP * 2, 26, 500, col.ink, 40) + 4; });
       const bottom = cy + IP;
