@@ -21,6 +21,13 @@
     }
     return shuffle(pool, rand).slice(0, n).map((o) => fill(o, rand));
   }
+  const adnominal = (trait) => (trait.endsWith("い") ? trait : trait + "な");
+  function persOptions(D, rand, n) {
+    const traits = shuffle(D.PERSONALITY, rand).map((o) => adnominal(o.t));
+    const out = [];
+    for (let i = 0; i < n; i++) out.push({ t: traits.slice(i * 3, i * 3 + 3).join("、") });
+    return out;
+  }
   function compose(D, picks) {
     return D.TEMPLATE.map((line) => line.replace(/\{(\w+)\}/g, (m, id) => (picks[id] ? picks[id].t : "＿＿")));
   }
@@ -37,6 +44,7 @@
       seen.push(o);
       picks[s.id] = fill(o, rand);
     });
+    picks.pers = persOptions(D, rand, 1)[0];
     const names = D.NAMES.filter((n) => used.indexOf(n) < 0);
     const pick = (arr) => arr[Math.floor(rand() * arr.length)];
     const sp = pick(D.SPECIES);
@@ -48,7 +56,6 @@
         bg: pick(P.BGS).id, item: pick(P.ITEMS).id,
       },
       species: sp.id, n: pick(sp.opts),
-      pers: shuffle(D.PERSONALITY, rand).slice(0, 3).map((o) => o.t),
       picks, lines: compose(D, picks),
     };
   }
@@ -58,6 +65,6 @@
     return list;
   }
 
-  const API = { setVars, shuffle, shownOptions, compose, genField };
+  const API = { setVars, shuffle, shownOptions, persOptions, compose, genField };
   if (typeof module !== "undefined") module.exports = API; else root.CORE = API;
 })(typeof window !== "undefined" ? window : globalThis);

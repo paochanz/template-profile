@@ -5,10 +5,11 @@
   const $ = (s, r) => (r || document).querySelector(s);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  const FLOW = ["title", "photo", "age", "pers", "intro", "confirm", "done", "others"];
+  const FLOW = ["title", "photo", "age", "intro", "confirm", "done", "others"];
   const NG = ["死ね", "しね", "殺す", "ころす", "うんこ", "ちんこ", "ちんぽ", "まんこ", "おっぱい", "せっくす", "えっち", "fuck", "shit", "sex"];
-  const ORDER = ["greet", "who1", "passive", "industry", "role", "with", "where", "what", "wish_who", "wish_what", "wish_feel", "closing"];
+  const ORDER = ["greet", "who1", "passive", "industry", "role", "with", "where", "what", "pers", "wish_who", "wish_what", "wish_feel", "closing"];
   const SLOT = {}; D.SLOTS.forEach((s) => (SLOT[s.id] = s));
+  const PERS_CHOICES = 4;
   const SP = {}; D.SPECIES.forEach((s) => (SP[s.id] = s));
 
   const KEY = "template-profile.nickname";
@@ -40,13 +41,13 @@
     token++;
     const shown = {}, picks = {};
     D.SLOTS.forEach((s) => { shown[s.id] = C.shownOptions(s, rand, 4); if (s.opts.length === 1) picks[s.id] = shown[s.id][0]; });
+    shown.pers = C.persOptions(D, rand, PERS_CHOICES);
     const sp0 = pickOf(D.SPECIES);
     const n0 = pickOf(sp0.opts);
     S = {
       screen: "title", name: loadName(), defName: pickOf(D.DEFAULT_NAMES),
       photo: savedPhoto() || { hair: pickOf(P.HAIRS).id, hairColor: pickOf(P.HAIR_COLORS).color, clothes: pickOf(P.CLOTHES).id, clothesColor: pickOf(P.CLOTHES_COLORS).color, bg: pickOf(P.BGS).id, item: pickOf(P.ITEMS).id },
       species: (savedAge() || { species: sp0.id }).species, n: (savedAge() || { n: n0 }).n,
-      persShown: C.shuffle(D.PERSONALITY, rand).slice(0, 12), pers: [],
       shown, picks, step: 0, npcs: [], detail: null, img: null, toast: "",
     };
   }
@@ -55,12 +56,8 @@
   const ageParts = (p) => { const sp = SP[p.species]; return [`${sp.name}でいうと`, `${p.n}${sp.unit}`]; };
   const ageText = (p) => ageParts(p).join("");
   const ageHTML = (p) => { const a = ageParts(p); return `<span class="ag1">${esc(a[0])}</span><span class="ag2">${esc(a[1])}</span>`; };
-  const PC = {}; D.PERSONALITY.forEach((o) => (PC[o.t] = o.color));
-  const luminance = (hex) => { const n = parseInt(hex.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0); };
-  const textOn = (hex) => (luminance(hex) + 0.05) / (luminance("#221F3C") + 0.05) > 1.05 / (luminance(hex) + 0.05) ? "#221F3C" : "#FFFFFF";
-  const pstyle = (t) => `background:${PC[t]};color:${textOn(PC[t])}`;
   function me() {
-    return { name: S.name, photo: S.photo, species: S.species, n: S.n, pers: S.pers.map((o) => o.t), lines: C.compose(D, S.picks) };
+    return { name: S.name, photo: S.photo, species: S.species, n: S.n, lines: C.compose(D, S.picks) };
   }
 
   const square = (photo) => P.mainPhoto(photo).replace('viewBox="0 0 300 400" width="300" height="400"', 'viewBox="0 40 300 300" width="300" height="300"');
@@ -72,7 +69,6 @@
         <div class="meta">
           <div class="name">${esc(p.name)}</div>
           <div class="age">${ageHTML(p)}</div>
-          <div class="ptags inl">${p.pers.map((t) => `<span style="${pstyle(t)}">${esc(t)}</span>`).join("")}</div>
         </div>
       </div>
       <div class="sentence">${p.lines.map((l) => `<p>${esc(l)}</p>`).join("")}</div>
@@ -80,7 +76,7 @@
   }
   function stepper() {
     const k = FLOW.indexOf(S.screen);
-    return `<div class="stepper" aria-hidden="true">${FLOW.slice(1, 6).map((_, j) => `<i class="${j <= k - 1 ? "on" : ""}"></i>`).join("")}</div>`;
+    return `<div class="stepper" aria-hidden="true">${FLOW.slice(1, 5).map((_, j) => `<i class="${j <= k - 1 ? "on" : ""}"></i>`).join("")}</div>`;
   }
   function bar(back, next, label, disabled) {
     return `<div class="bar">${back ? `<button class="btn ghost" data-act="back">戻る</button>` : ""}<button class="btn" data-act="${next}" ${disabled ? "disabled" : ""}>${label}</button></div>`;
@@ -120,18 +116,13 @@
       ${bar(true, "next", "次へ")}</div>`;
   };
 
-  R.pers = () => `<div class="screen">${stepper()}
-      <div class="head-row"><h2>性格を3つ選んでください（${S.pers.length}/3）</h2>${SHUFFLE("rpers", "性格をランダムに3つ選ぶ")}</div>
-      <div class="row">${S.persShown.map((o) => `<button class="chip pc ${S.pers.length >= 3 && !S.pers.includes(o) ? "dim" : ""}" style="background:${o.color};color:${textOn(o.color)}" data-act="pers" data-v="${esc(o.t)}" aria-pressed="${S.pers.includes(o)}">${S.pers.includes(o) ? "✓ " : ""}${esc(o.t)}</button>`).join("")}</div>
-      ${bar(true, "next", "次へ", S.pers.length !== 3)}</div>`;
-
   function previewHTML(curId) {
     return D.TEMPLATE.map((line) => {
       let out = "", last = 0, m; const re = /\{(\w+)\}/g;
       while ((m = re.exec(line))) {
         out += esc(line.slice(last, m.index)); last = re.lastIndex;
         const id = m[1];
-        out += S.picks[id] ? (SLOT[id].opts.length > 1 ? `<span class="fill${id === curId ? " cur" : ""}" role="button" tabindex="0" data-act="goto" data-id="${id}">${esc(S.picks[id].t)}</span>` : esc(S.picks[id].t)) : id === curId ? '<span class="cur">＿＿＿</span>' : '<span class="ph">＿＿</span>';
+        out += S.picks[id] ? ((id === "pers" || SLOT[id].opts.length > 1) ? `<span class="fill${id === curId ? " cur" : ""}" role="button" tabindex="0" data-act="goto" data-id="${id}">${esc(S.picks[id].t)}</span>` : esc(S.picks[id].t)) : id === curId ? '<span class="cur">＿＿＿</span>' : '<span class="ph">＿＿</span>';
       }
       return `<p>${out + esc(line.slice(last))}</p>`;
     }).join("");
@@ -162,7 +153,7 @@
       <h2>ほかの人のプロフィール</h2>
       <div class="grid2">${S.npcs.map((n, i) => `<div class="pcard" role="button" tabindex="0" data-act="detail" data-i="${i}">
           <div class="photo">${P.mainPhoto(n.photo)}</div>
-          <div class="nm">${esc(n.name)}</div><div class="ag">${ageHTML(n)}</div><div class="mini">${n.pers.map((t) => `<span style="${pstyle(t)}">${esc(t)}</span>`).join("")}</div></div>`).join("")}</div>
+          <div class="nm">${esc(n.name)}</div><div class="ag">${ageHTML(n)}</div></div>`).join("")}</div>
       <div class="bar"><button class="btn ghost" data-act="todone">戻る</button><button class="btn" data-act="more">別の10人を見る</button></div>
       ${S.detail != null ? sheet() : ""}</div>`;
 
@@ -219,19 +210,13 @@
         if (S.screen === "title") { const er = nameError(S.name); if (er) { $("#nickerr").textContent = er; return; } if (!S.name.trim()) S.name = S.defName; saveName(S.name); }
         if (S.screen === "photo") savePhoto();
         if (S.screen === "age") saveAge();
-        if (S.screen === "pers") S.step = 0;
+        if (S.screen === "age") S.step = 0;
         go(FLOW[FLOW.indexOf(S.screen) + 1]); break;
       }
       case "back": go(FLOW[FLOW.indexOf(S.screen) - 1]); break;
       case "ph": case "phc": if (el.dataset.k in S.photo) { S.photo[el.dataset.k] = v; render(true); } break;
       case "rphoto": S.photo = { hair: pickOf(P.HAIRS).id, hairColor: pickOf(P.HAIR_COLORS).color, clothes: pickOf(P.CLOTHES).id, clothesColor: pickOf(P.CLOTHES_COLORS).color, bg: pickOf(P.BGS).id, item: pickOf(P.ITEMS).id }; render(true); break;
-      case "rpers": S.pers = C.shuffle(S.persShown, rand).slice(0, 3); render(true); break;
       case "sp": { S.species = v; const o = SP[v].opts; if (!o.includes(S.n)) S.n = o[Math.floor(o.length / 2)]; render(true); break; }
-      case "pers": {
-        const o = S.persShown.find((x) => x.t === v), k = S.pers.indexOf(o);
-        if (k >= 0) S.pers.splice(k, 1); else if (S.pers.length < 3) S.pers.push(o);
-        render(true); break;
-      }
       case "pick": {
         const id = ORDER[S.step], at = S.step;
         S.picks[id] = S.shown[id][i]; render(true);
@@ -239,7 +224,7 @@
         break;
       }
       case "goto": S.step = ORDER.indexOf(el.dataset.id); render(true); break;
-      case "iback": if (S.step > 0) { S.step--; render(); } else go("pers"); break;
+      case "iback": if (S.step > 0) { S.step--; render(); } else go("age"); break;
       case "publish": S.img = null; go("done"); { const my = token; makeImage().then((u) => { if (token === my) { S.img = u; if (S.screen === "done") render(true); } }, () => {}); } break;
       case "toothers": S.npcs = C.genField(D, P, rand, 10, S.picks); S.detail = null; go("others"); break;
       case "todone": S.detail = null; go("done"); break;
@@ -286,7 +271,7 @@
     if (cur) out.push(cur); return out;
   }
   async function makeImage() {
-    try { const sample = S.name + ageText(me()) + me().pers.join("") + me().lines.join("") + "テンプレート・プロフィール";
+    try { const sample = S.name + ageText(me()) + me().lines.join("") + "テンプレート・プロフィール";
       await Promise.race([Promise.all([900, 700, 500].map((w) => document.fonts.load(`${w} 28px "Zen Maru Gothic"`, sample))), sleep(1500)]); } catch (_) {}
     const dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
     const col = dark ? { bg: "#14132A", card: "#201E3B", ink: "#F2F0FF", muted: "#A9A5C9", acc: "#FF6F92", tint: "#40233A" }
@@ -309,14 +294,6 @@
       let ry = cy;
       ry += para(my.name, rx, ry, rw, 38, 900, col.ink, 48);
       const ap = ageParts(my); ry += para(ap[0], rx, ry, rw, 20, 700, col.muted, 28); ry += para(ap[1], rx, ry, rw, 34, 900, col.ink, 42) + 10;
-      let px = rx;
-      my.pers.forEach((t) => {
-        ctx.font = `900 24px ${FONT}`; const w = ctx.measureText(t).width + 24;
-        if (px + w > rx + rw) { px = rx; ry += 46; }
-        if (real) { ctx.fillStyle = PC[t]; rr(px, ry, w, 38, 10); ctx.fill(); }
-        tx(t, px + 12, ry + 5, 24, 900, textOn(PC[t])); px += w + 8;
-      });
-      ry += 46;
       cy = Math.max(cy + PH, ry) + 26;
       my.lines.forEach((l) => { cy += para(l, cx, cy, CW - IP * 2, 26, 500, col.ink, 40) + 4; });
       const bottom = cy + IP;
