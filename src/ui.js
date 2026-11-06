@@ -144,7 +144,7 @@
       ${S.img ? `<img class="result-img" src="${S.img}" alt="${esc(resultText())}">` : `<div class="card">${profileHTML(me())}</div>`}
       <div class="row">${S.img ? `<button class="btn" data-act="save" style="flex:1">画像を保存</button>` : ""}<button class="btn ghost" data-act="copy" style="flex:1">文章でコピー</button></div>
       ${S.img ? `<p class="hint">うまく保存できないときは、画像を長押ししてください</p>` : ""}
-      <div class="bar"><button class="btn ghost" data-act="toothers">ほかの人のプロフィール</button><button class="btn" data-act="again">もう一度作る</button></div>
+      <div class="bar"><button class="btn ghost" data-act="toothers">ほかの人のプロフィール</button><button class="btn" data-act="again"><span class="nb">もう一度</span><span class="nb">作る</span></button></div>
       <p class="support"><a href="${SITE}" target="_blank" rel="noopener noreferrer">paochanz.com</a></p>
       <p class="support">気に入ったら <a href="${SUPPORT}" target="_blank" rel="noopener noreferrer">OFUSEで応援する</a></p>${S.toast ? `<div class="toast">${esc(S.toast)}</div>` : ""}</div>`;
 

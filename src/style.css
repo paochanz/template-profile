@@ -92,3 +92,4 @@ select{appearance:none;-webkit-appearance:none;border:2px solid var(--accent);fo
 .dice:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .pvwrap .dice{position:absolute;right:0;bottom:8px}
 .profile .ag1{font-size:14px}.profile .ag2{font-size:24px}
+.nb{display:inline-block}
