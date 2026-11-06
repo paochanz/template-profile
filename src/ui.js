@@ -7,8 +7,7 @@
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const FLOW = ["title", "photo", "age", "intro", "confirm", "done", "others"];
   const NG = ["死ね", "しね", "殺す", "ころす", "うんこ", "ちんこ", "ちんぽ", "まんこ", "おっぱい", "せっくす", "えっち", "fuck", "shit", "sex"];
-  const ORDER = ["greet", "who1", "passive", "industry", "role", "with", "where", "what", "pers", "wish_who", "wish_what", "wish_feel", "closing"];
-  const SLOT = {}; D.SLOTS.forEach((s) => (SLOT[s.id] = s));
+  const ORDER = ["greet", "who1", "passive", "industry", "role", "with", "where", "what", ...C.PERS_SLOTS, "wish_who", "wish_what", "wish_feel", "closing"];
   const PERS_CHOICES = 4;
   const SP = {}; D.SPECIES.forEach((s) => (SP[s.id] = s));
 
@@ -41,7 +40,7 @@
     token++;
     const shown = {}, picks = {};
     D.SLOTS.forEach((s) => { shown[s.id] = C.shownOptions(s, rand, 4); if (s.opts.length === 1) picks[s.id] = shown[s.id][0]; });
-    shown.pers = C.persOptions(D, rand, PERS_CHOICES);
+    C.persChoices(D, rand, PERS_CHOICES).forEach(([id, opts]) => (shown[id] = opts));
     const sp0 = pickOf(D.SPECIES);
     const n0 = pickOf(sp0.opts);
     S = {
@@ -122,7 +121,7 @@
       while ((m = re.exec(line))) {
         out += esc(line.slice(last, m.index)); last = re.lastIndex;
         const id = m[1];
-        out += S.picks[id] ? ((id === "pers" || SLOT[id].opts.length > 1) ? `<span class="fill${id === curId ? " cur" : ""}" role="button" tabindex="0" data-act="goto" data-id="${id}">${esc(S.picks[id].t)}</span>` : esc(S.picks[id].t)) : id === curId ? '<span class="cur">＿＿＿</span>' : '<span class="ph">＿＿</span>';
+        out += S.picks[id] ? (S.shown[id].length > 1 ? `<span class="fill${id === curId ? " cur" : ""}" role="button" tabindex="0" data-act="goto" data-id="${id}">${esc(S.picks[id].t)}</span>` : esc(S.picks[id].t)) : id === curId ? '<span class="cur">＿＿＿</span>' : '<span class="ph">＿＿</span>';
       }
       return `<p>${out + esc(line.slice(last))}</p>`;
     }).join("");
