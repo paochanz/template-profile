@@ -498,8 +498,8 @@ select{appearance:none;-webkit-appearance:none;border:2px solid var(--accent);fo
   const SUPPORT = "https://ofuse.me/d03803b1", SITE = "https://paochanz.com";
   R.done = () => `<div class="screen">
       ${S.img ? `<img class="result-img" src="${S.img}" alt="${esc(resultText())}">` : `<div class="card">${profileHTML(me())}</div>`}
-      ${S.img ? `<p class="hint">画像を長押しすると保存できます</p>` : ""}
-      <div class="row"><button class="btn ghost" data-act="copy" style="flex:1">文章でコピー</button></div>
+      <div class="row">${S.img ? `<button class="btn" data-act="save" style="flex:1">画像を保存</button>` : ""}<button class="btn ghost" data-act="copy" style="flex:1">文章でコピー</button></div>
+      ${S.img ? `<p class="hint">うまく保存できないときは、画像を長押ししてください</p>` : ""}
       <div class="bar"><button class="btn ghost" data-act="toothers">ほかの人のプロフィール</button><button class="btn" data-act="again">もう一度作る</button></div>
       <p class="support"><a href="${SITE}" target="_blank" rel="noopener noreferrer">paochanz.com</a></p>
       <p class="support">気に入ったら <a href="${SUPPORT}" target="_blank" rel="noopener noreferrer">OFUSEで応援する</a></p>${S.toast ? `<div class="toast">${esc(S.toast)}</div>` : ""}</div>`;
@@ -587,6 +587,7 @@ select{appearance:none;-webkit-appearance:none;border:2px solid var(--accent);fo
       case "detail": S.detail = i; render(true); break;
       case "closesheet2": S.detail = null; render(true); break;
       case "copy": copyText(); break;
+      case "save": saveImage(); break;
       case "again": fresh(); go("title"); break;
     }
   });
@@ -604,6 +605,17 @@ select{appearance:none;-webkit-appearance:none;border:2px solid var(--accent);fo
       ta.remove();
     };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, fb); else fb();
+  }
+  async function saveImage() {
+    const blob = await (await fetch(S.img)).blob();
+    const file = new File([blob], "template-profile.png", { type: "image/png" });
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); return; }
+    } catch (e) { if (e && e.name === "AbortError") return; }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = file.name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
   function svgImg(svg) {
     return new Promise((res, rej) => {
