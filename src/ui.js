@@ -294,7 +294,12 @@
     const imMe = await svgImg(square(my.photo));
     function run(ctx, real) {
       const tx = (t, x, y, size, w, color) => { ctx.font = `${w} ${size}px ${FONT}`; ctx.fillStyle = color; ctx.textBaseline = "top"; if (real) ctx.fillText(t, x, y); };
-      const para = (t, x, y, maxW, size, w, color, lh) => { ctx.font = `${w} ${size}px ${FONT}`; const ls = wrap(ctx, t, maxW); ls.forEach((l, k) => tx(l, x, y + k * lh, size, w, color)); return ls.length * lh; };
+      const para = (t, x, y, maxW, size, w, color, lh, inkLeft) => {
+        ctx.font = `${w} ${size}px ${FONT}`;
+        const ls = wrap(ctx, t, maxW);
+        ls.forEach((l, k) => tx(l, inkLeft ? x + ctx.measureText(l).actualBoundingBoxLeft : x, y + k * lh, size, w, color));
+        return ls.length * lh;
+      };
       const rr = (x, y, w, h, r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); };
       let y = PAD;
       if (real) ctx.drawImage(imLogo, PAD, y, 56, 56);
@@ -305,8 +310,8 @@
       const ap = ageParts(my);
       const blockH = [[my.name, 44, 900, 54], [ap[0], 22, 700, 30], [ap[1], 40, 900, 48]].reduce((sum, [t, size, w, lh]) => { ctx.font = `${w} ${size}px ${FONT}`; return sum + wrap(ctx, t, rw).length * lh; }, 0);
       let ry = cy + Math.max(0, (PH - blockH) / 2);
-      ry += para(my.name, rx, ry, rw, 44, 900, col.ink, 54);
-      ry += para(ap[0], rx, ry, rw, 22, 700, col.muted, 30); ry += para(ap[1], rx, ry, rw, 40, 900, col.ink, 48);
+      ry += para(my.name, rx, ry, rw, 44, 900, col.ink, 54, true);
+      ry += para(ap[0], rx, ry, rw, 22, 700, col.muted, 30, true); ry += para(ap[1], rx, ry, rw, 40, 900, col.ink, 48, true);
       cy = Math.max(cy + PH, ry) + 26;
       my.lines.forEach((l) => { cy += para(l, cx, cy, CW - IP * 2, 26, 500, col.ink, 40) + 4; });
       const bottom = cy + IP;
